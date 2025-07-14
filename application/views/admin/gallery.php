@@ -9,6 +9,7 @@
             <a href="<?php echo base_url('admin/gallery'); ?>" class="list-group-item list-group-item-action active">Gallery</a>
             <a href="<?php echo base_url('admin/contact'); ?>" class="list-group-item list-group-item-action">Contact</a>
             <a href="<?php echo base_url('admin/legal'); ?>" class="list-group-item list-group-item-action">Legal Pages</a>
+            <a href="<?php echo base_url('admin/logo'); ?>" class="list-group-item list-group-item-action">Logo</a>
         </div>
     </div>
     <div class="col-md-9">

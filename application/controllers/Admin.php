@@ -193,4 +193,48 @@ class Admin extends CI_Controller {
 		$this->db->update_batch('legal', $data, 'id');
 		redirect('admin/legal');
 	}
+
+	public function logo()
+	{
+		$this->load->view('admin/logo');
+	}
+
+	public function upload_logo()
+	{
+		$config['upload_path']          = './uploads/logo/';
+		$config['allowed_types']        = 'gif|jpg|png|jpeg';
+		$config['max_size']             = 2048;
+		$config['max_width']            = 1920;
+		$config['max_height']           = 1080;
+
+		$this->load->library('upload', $config);
+
+		if ( ! $this->upload->do_upload('image'))
+		{
+			$error = array('error' => $this->upload->display_errors());
+			$this->load->view('admin/logo', $error);
+		}
+		else
+		{
+			$data = array('upload_data' => $this->upload->data());
+			$this->load->library('image_lib');
+			$config['image_library'] = 'gd2';
+			$config['source_image'] = $data['upload_data']['full_path'];
+			$config['create_thumb'] = FALSE;
+			$config['maintain_ratio'] = TRUE;
+			$config['width']         = 200;
+			$config['height']       = 200;
+			$config['new_image'] = './uploads/logo/webp/'.$data['upload_data']['raw_name'].'.webp';
+			$config['quality'] = '80%';
+			$this->image_lib->initialize($config);
+			$this->image_lib->resize();
+			$this->image_lib->clear();
+
+			//save to database
+			$this->db->where('id', 1);
+			$this->db->update('settings', array('logo' => $config['new_image']));
+
+			redirect('admin/logo');
+		}
+	}
 }
