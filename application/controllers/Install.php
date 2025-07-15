@@ -36,16 +36,16 @@ class Install extends CI_Controller
             $data = file_get_contents(APPPATH.'config/database.php');
             $data = str_replace(
                 array(
-                    "'hostname' => 'localhost'",
-                    "'username' => 'root'",
-                    "'password' => 'root'",
-                    "'database' => 'codeigniter'"
+                    '$database_host     = "localhost"',
+                    '$database_user     = \'root\'',
+                    '$database_password = \'\'',
+                    '$database_name     = \'landingcms\''
                 ),
                 array(
-                    "'hostname' => '".$hostname."'",
-                    "'username' => '".$username."'",
-                    "'password' => '".$password."'",
-                    "'database' => '".$database."'"
+                    '$database_host     = "'.$hostname.'"',
+                    '$database_user     = \''.$username.'\'',
+                    '$database_password = \''.$password.'\'',
+                    '$database_name     = \''.$database.'\''
                 ),
                 $data
             );
