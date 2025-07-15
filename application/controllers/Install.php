@@ -89,10 +89,10 @@ class Install extends CI_Controller
             $data = file_get_contents(APPPATH.'config/config.php');
             $data = str_replace(
                 array(
-                    '$carpeta_local = \'musica\''
+                    '$local_folder = \'landingcms\''
                 ),
                 array(
-                    '$carpeta_local = \''.trim(str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']), '/').'\''
+                    '$local_folder = \''.trim(str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']), '/').'\''
                 ),
                 $data
             );
