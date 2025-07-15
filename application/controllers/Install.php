@@ -85,6 +85,19 @@ class Install extends CI_Controller
             );
             write_file(APPPATH.'config/database.php', $data);
 
+            //write to config.php
+            $data = file_get_contents(APPPATH.'config/config.php');
+            $data = str_replace(
+                array(
+                    '$carpeta_local = \'musica\''
+                ),
+                array(
+                    '$carpeta_local = \''.trim(str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']), '/').'\''
+                ),
+                $data
+            );
+            write_file(APPPATH.'config/config.php', $data);
+
             //run migrations
             $this->load->library('migration');
             if ($this->migration->latest() === FALSE)
