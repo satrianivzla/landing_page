@@ -5,7 +5,9 @@ class Home extends CI_Controller {
 
 	public function index()
 	{
-		$data['logo'] = $this->db->get_where('settings', array('id' => 1))->row()->logo;
+		$settings = $this->db->get_where('settings', array('id' => 1))->row();
+		$data['logo'] = $settings->logo;
+		$data['favicon'] = $settings->favicon;
 		$this->load->view('home', $data);
 	}
 }

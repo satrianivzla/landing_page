@@ -9,15 +9,15 @@
             <a href="<?php echo base_url('admin/gallery'); ?>" class="list-group-item list-group-item-action">Gallery</a>
             <a href="<?php echo base_url('admin/contact'); ?>" class="list-group-item list-group-item-action">Contact</a>
             <a href="<?php echo base_url('admin/legal'); ?>" class="list-group-item list-group-item-action">Legal Pages</a>
-            <a href="<?php echo base_url('admin/logo'); ?>" class="list-group-item list-group-item-action active">Logo</a>
-            <a href="<?php echo base_url('admin/favicon'); ?>" class="list-group-item list-group-item-action">Favicon</a>
+            <a href="<?php echo base_url('admin/logo'); ?>" class="list-group-item list-group-item-action">Logo</a>
+            <a href="<?php echo base_url('admin/favicon'); ?>" class="list-group-item list-group-item-action active">Favicon</a>
         </div>
     </div>
     <div class="col-md-9">
-        <h1>Manage Logo</h1>
+        <h1>Manage Favicon</h1>
         <hr>
-        <h3>Upload New Logo</h3>
-        <?php echo form_open_multipart('admin/upload_logo');?>
+        <h3>Upload New Favicon</h3>
+        <?php echo form_open_multipart('admin/upload_favicon');?>
             <div class="form-group">
                 <label for="image">Image</label>
                 <input type="file" name="image" id="image" class="form-control">
@@ -25,8 +25,8 @@
             <button type="submit" class="btn btn-primary">Upload</button>
         </form>
         <hr>
-        <h3>Current Logo</h3>
-        <img src="https://via.placeholder.com/150x50.png?text=Logo" class="img-thumbnail">
+        <h3>Current Favicon</h3>
+        <img src="https://via.placeholder.com/32x32.png?text=Favicon" class="img-thumbnail">
     </div>
 </div>
 

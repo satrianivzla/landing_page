@@ -1,4 +1,4 @@
-<?php $this->load->view('templates/header', array('logo' => $logo)); ?>
+<?php $this->load->view('templates/header', array('logo' => $logo, 'favicon' => $favicon)); ?>
 
 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
   <div class="carousel-indicators">
