@@ -14,8 +14,16 @@ class Install extends CI_Controller
 
     public function index()
     {
-        $data['requirements'] = $this->install_model->check_server_requirements();
-        $this->load->view('install/index', $data);
+        if (empty($this->config->item('base_url')))
+        {
+            $this->data['message'] = 'Please set the base_url in application/config/config.php';
+        }
+        else
+        {
+            $this->data['message'] = '';
+        }
+        $this->data['requirements'] = $this->install_model->check_server_requirements();
+        $this->load->view('install/index', $this->data);
     }
 
     public function step2()
@@ -32,6 +40,29 @@ class Install extends CI_Controller
 
         if ($this->install_model->validate_database_credentials($hostname, $username, $password, $database))
         {
+            //create uploads directories
+            if (!is_dir('./uploads')) {
+                mkdir('./uploads', 0755, TRUE);
+            }
+            if (!is_dir('./uploads/slider')) {
+                mkdir('./uploads/slider', 0755, TRUE);
+            }
+            if (!is_dir('./uploads/slider/webp')) {
+                mkdir('./uploads/slider/webp', 0755, TRUE);
+            }
+            if (!is_dir('./uploads/gallery')) {
+                mkdir('./uploads/gallery', 0755, TRUE);
+            }
+            if (!is_dir('./uploads/gallery/webp')) {
+                mkdir('./uploads/gallery/webp', 0755, TRUE);
+            }
+            if (!is_dir('./uploads/logo')) {
+                mkdir('./uploads/logo', 0755, TRUE);
+            }
+            if (!is_dir('./uploads/logo/webp')) {
+                mkdir('./uploads/logo/webp', 0755, TRUE);
+            }
+
             //write to database.php
             $data = file_get_contents(APPPATH.'config/database.php');
             $data = str_replace(
@@ -102,6 +133,11 @@ class Install extends CI_Controller
 
 			$this->install_model->save_site_info($this->input->post('site_title'), $config['new_image']);
 
+			$this->load->view('install/step4');
+		}
+		else
+		{
+			$this->install_model->save_site_info($this->input->post('site_title'), 'https://placehold.co/150x50');
 			$this->load->view('install/step4');
 		}
     }

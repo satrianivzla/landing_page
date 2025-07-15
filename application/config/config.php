@@ -23,7 +23,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://localhost/';
+$carpeta_local = 'musica';
+$dominio_online = "http://www.mydomain.com/";
+
+switch($_SERVER["SERVER_NAME"]) {
+    case "localhost":
+        $config['base_url'] = 'http://localhost/'.$carpeta_local.'/';
+        break;
+    case "mydomain.com":
+        $config["base_url"] = $dominio_online;
+        break;
+}
 
 /*
 |--------------------------------------------------------------------------
