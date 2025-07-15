@@ -1,4 +1,4 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php
 
 class Install extends CI_Controller
 {
@@ -22,17 +22,15 @@ class Install extends CI_Controller
         {
             $this->data['message'] = '';
         }
+		$this->data['page_title'] = 'Step # 1: Server Requirements';
         $this->data['requirements'] = $this->install_model->check_server_requirements();
-        $this->load->view('templates/installer_header');
         $this->load->view('install/index', $this->data);
-        $this->load->view('templates/installer_footer');
     }
 
     public function step2()
     {
-        $this->load->view('templates/installer_header');
-        $this->load->view('install/step2');
-        $this->load->view('templates/installer_footer');
+        $this->data['page_title'] = 'Step # 2: Database Credentials';
+		$this->load->view('install/step2', $this->data);
     }
 
     public function step3()
@@ -41,8 +39,9 @@ class Install extends CI_Controller
         $username = $this->input->post('username');
         $password = $this->input->post('password');
         $database = $this->input->post('database');
+        $this->data['page_title'] = 'Step # 3: Site Information';
 
-        if ($this->install_model->validate_database_credentials($hostname, $username, $password, $database))
+		if ($this->install_model->validate_database_credentials($hostname, $username, $password, $database))
         {
             //create uploads directories
             if (!is_dir('./uploads')) {
@@ -89,19 +88,6 @@ class Install extends CI_Controller
             );
             write_file(APPPATH.'config/database.php', $data);
 
-            //write to config.php
-            $data = file_get_contents(APPPATH.'config/config.php');
-            $data = str_replace(
-                array(
-                    '$local_folder = \'landingcms\''
-                ),
-                array(
-                    '$local_folder = \''.trim(str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']), '/').'\''
-                ),
-                $data
-            );
-            write_file(APPPATH.'config/config.php', $data);
-
             //run migrations
             $this->load->library('migration');
             if ($this->migration->latest() === FALSE)
@@ -111,9 +97,7 @@ class Install extends CI_Controller
             else
             {
                 $this->load->library('ion_auth');
-                $this->load->view('templates/installer_header');
-                $this->load->view('install/step3');
-                $this->load->view('templates/installer_footer');
+                $this->load->view('install/step3', $this->data);
             }
         }
         else
@@ -124,7 +108,8 @@ class Install extends CI_Controller
 
     public function step4()
     {
-        //upload logo
+        $this->data['page_title'] = 'Step # 4';
+		//upload logo
 		$config['upload_path']          = './uploads/logo/';
 		$config['allowed_types']        = 'gif|jpg|png|jpeg';
 		$config['max_size']             = 2048;
@@ -136,9 +121,7 @@ class Install extends CI_Controller
 		if ( ! $this->upload->do_upload('logo'))
 		{
 			$this->install_model->save_site_info($this->input->post('site_title'), 'https://placehold.co/150x50');
-			$this->load->view('templates/installer_header');
-			$this->load->view('install/step4');
-			$this->load->view('templates/installer_footer');
+			$this->load->view('install/step4', $this->data);
 		}
 		else
 		{
@@ -158,13 +141,11 @@ class Install extends CI_Controller
 
 			$this->install_model->save_site_info($this->input->post('site_title'), $config['new_image']);
 
-			$this->load->view('templates/installer_header');
-			$this->load->view('install/step4');
-			$this->load->view('templates/installer_footer');
+			$this->load->view('install/step4', $this->data);
 		}
     }
 
 }
 
-/* End of file Install.php */
-/* Location: ./application/controllers/Install.php */
+/* End of file install.php */
+/* Location: ./application/controllers/install.php */
