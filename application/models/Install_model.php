@@ -78,4 +78,16 @@ class Install_model extends CI_Model {
             return false;
         }
     }
+
+    public function is_installed()
+    {
+        if ($this->db->conn_id)
+        {
+            if ($this->db->table_exists('users'))
+            {
+                return TRUE;
+            }
+        }
+        return FALSE;
+    }
 }
