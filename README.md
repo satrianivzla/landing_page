@@ -31,9 +31,7 @@ This is a simple Coming Soon Page CMS built with CodeIgniter 3, Ion Auth, and Bo
     composer install
     ```
 3.  Create a database.
-4.  Configure the database connection in `application/config/database.php`.
-5.  Configure the base URL in `application/config/config.php`.
-6.  Run the installer by navigating to `http://your-site.com/install`.
+4.  Navigate to `http://your-site.com/install` and follow the on-screen instructions.
 7.  Access the admin panel at `http://your-site.com/admin` and log in with the default credentials:
     *   **Email:** admin@admin.com
     *   **Password:** password
