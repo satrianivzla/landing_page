@@ -21,3 +21,6 @@ class Home extends CI_Controller {
 		$this->load->view('home', $data);
 	}
 }
+
+/* End of file Home.php */
+/* Location: ./application/controllers/Home.php */

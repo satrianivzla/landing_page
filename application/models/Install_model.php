@@ -1,4 +1,4 @@
-<?php
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Install_model extends CI_Model {
 
@@ -91,3 +91,6 @@ class Install_model extends CI_Model {
         return FALSE;
     }
 }
+
+/* End of file Install_model.php */
+/* Location: ./application/models/Install_model.php */
