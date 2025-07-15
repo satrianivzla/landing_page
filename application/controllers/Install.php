@@ -62,6 +62,9 @@ class Install extends CI_Controller
             if (!is_dir('./uploads/logo/webp')) {
                 mkdir('./uploads/logo/webp', 0755, TRUE);
             }
+            if (!is_dir('./uploads/favicon')) {
+                mkdir('./uploads/favicon', 0755, TRUE);
+            }
 
             //write to database.php
             $data = file_get_contents(APPPATH.'config/database.php');
@@ -83,14 +86,15 @@ class Install extends CI_Controller
             write_file(APPPATH.'config/database.php', $data);
 
             //run migrations
-            $migration = $this->install_model->run_migrations();
-            if ($migration === TRUE)
+            $this->load->library('migration');
+            if ($this->migration->latest() === FALSE)
             {
-                $this->load->view('install/step3');
+                show_error($this->migration->error_string());
             }
             else
             {
-                show_error($migration);
+                $this->load->library('ion_auth');
+                $this->load->view('install/step3');
             }
         }
         else
@@ -112,8 +116,8 @@ class Install extends CI_Controller
 
 		if ( ! $this->upload->do_upload('logo'))
 		{
-			$error = array('error' => $this->upload->display_errors());
-			$this->load->view('install/step3', $error);
+			$this->install_model->save_site_info($this->input->post('site_title'), 'https://placehold.co/150x50');
+			$this->load->view('install/step4');
 		}
 		else
 		{
@@ -133,11 +137,6 @@ class Install extends CI_Controller
 
 			$this->install_model->save_site_info($this->input->post('site_title'), $config['new_image']);
 
-			$this->load->view('install/step4');
-		}
-		else
-		{
-			$this->install_model->save_site_info($this->input->post('site_title'), 'https://placehold.co/150x50');
 			$this->load->view('install/step4');
 		}
     }
