@@ -11,7 +11,14 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                <img src="<?php echo base_url($logo); ?>" alt="Logo" width="150">
+			      <?php
+				    $installer_logo ="logo.png";
+					if (@getimagesize(base_url($logo))) {
+						echo '<img src="'. base_url($logo).'" alt="Logo" title="Logo" width="150">';
+					} else {
+			            echo '<img src="'. base_url('uploads/'. $installer_logo).'" alt="Logo" title="Logo" width="150">';
+					}
+				  ?>
             </a>
         </div>
     </nav>
