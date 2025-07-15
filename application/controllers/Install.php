@@ -23,12 +23,16 @@ class Install extends CI_Controller
             $this->data['message'] = '';
         }
         $this->data['requirements'] = $this->install_model->check_server_requirements();
+        $this->load->view('templates/installer_header');
         $this->load->view('install/index', $this->data);
+        $this->load->view('templates/installer_footer');
     }
 
     public function step2()
     {
+        $this->load->view('templates/installer_header');
         $this->load->view('install/step2');
+        $this->load->view('templates/installer_footer');
     }
 
     public function step3()
@@ -107,7 +111,9 @@ class Install extends CI_Controller
             else
             {
                 $this->load->library('ion_auth');
+                $this->load->view('templates/installer_header');
                 $this->load->view('install/step3');
+                $this->load->view('templates/installer_footer');
             }
         }
         else
@@ -130,7 +136,9 @@ class Install extends CI_Controller
 		if ( ! $this->upload->do_upload('logo'))
 		{
 			$this->install_model->save_site_info($this->input->post('site_title'), 'https://placehold.co/150x50');
+			$this->load->view('templates/installer_header');
 			$this->load->view('install/step4');
+			$this->load->view('templates/installer_footer');
 		}
 		else
 		{
@@ -150,7 +158,9 @@ class Install extends CI_Controller
 
 			$this->install_model->save_site_info($this->input->post('site_title'), $config['new_image']);
 
+			$this->load->view('templates/installer_header');
 			$this->load->view('install/step4');
+			$this->load->view('templates/installer_footer');
 		}
     }
 
