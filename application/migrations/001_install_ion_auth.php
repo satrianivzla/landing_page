@@ -63,12 +63,11 @@ class Migration_Install_ion_auth extends CI_Migration {
 			),
 			'password' => array(
 				'type' => 'VARCHAR',
-				'constraint' => '255',
+				'constraint' => '80',
 			),
 			'salt' => array(
 				'type' => 'VARCHAR',
-				'constraint' => '255',
-				'null' => TRUE
+				'constraint' => '40'
 			),
 			'email' => array(
 				'type' => 'VARCHAR',
@@ -141,7 +140,7 @@ class Migration_Install_ion_auth extends CI_Migration {
 			'id' => '1',
 			'ip_address' => '127.0.0.1',
 			'username' => 'administrator',
-			'password' => '$2y$08$200Z6ZZbp3RAvlUpNwApPeQVJC2KrrC_S_v3FLeSyY1s3Ev1m3uRe',
+			'password' => '$2a$07$SeBknntpZror9uyftVopmu61qg0ms8Qv1yV6FG.kQOSM.9QhmTo36',
 			'salt' => '',
 			'email' => 'admin@admin.com',
 			'activation_code' => '',

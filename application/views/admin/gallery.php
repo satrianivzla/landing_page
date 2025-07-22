@@ -10,7 +10,6 @@
             <a href="<?php echo base_url('admin/contact'); ?>" class="list-group-item list-group-item-action">Contact</a>
             <a href="<?php echo base_url('admin/legal'); ?>" class="list-group-item list-group-item-action">Legal Pages</a>
             <a href="<?php echo base_url('admin/logo'); ?>" class="list-group-item list-group-item-action">Logo</a>
-            <a href="<?php echo base_url('admin/favicon'); ?>" class="list-group-item list-group-item-action">Favicon</a>
         </div>
     </div>
     <div class="col-md-9">
