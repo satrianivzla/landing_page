@@ -1,170 +1,116 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Install extends CI_Controller
-{
+class Install extends CI_Controller {
 
-    public function __construct()
-    {
+    private $data = [];
+
+    public function __construct() {
         parent::__construct();
-        $this->load->library('form_validation');
         $this->load->helper('url');
-        $this->load->helper('file');
-        $this->load->model('install_model');
+        $this->load->helper('form');
+        $this->load->library('form_validation');
+        $this->load->library('session');
+        $this->load->model('Install_model');
+
+        // Basic data for views
+        $this->data['title'] = 'Installation';
+        $this->data['project_name'] = 'Coming Soon';
     }
 
-    public function index()
-    {
-        if (empty($this->config->item('base_url')))
-        {
-            $this->data['message'] = 'Please set the base_url in application/config/config.php';
-        }
-        else
-        {
-            $this->data['message'] = '';
-        }
-        $this->data['requirements'] = $this->install_model->check_server_requirements();
-        $this->load->view('templates/installer_header');
-        $this->load->view('install/index', $this->data);
-        $this->load->view('templates/installer_footer');
+    public function index() {
+        $this->step_1();
     }
 
-    public function step2()
-    {
-        $this->load->view('templates/installer_header');
-        $this->load->view('install/step2');
-        $this->load->view('templates/installer_footer');
-    }
+    public function step_1() {
+        $this->data['section'] = 'Database Setup';
+        $this->form_validation->set_rules('hostname', 'Hostname', 'required');
+        $this->form_validation->set_rules('username', 'Username', 'required');
+        $this->form_validation->set_rules('password', 'Password', 'required');
+        $this->form_validation->set_rules('database', 'Database', 'required');
 
-    public function step3()
-    {
-        $hostname = $this->input->post('hostname');
-        $username = $this->input->post('username');
-        $password = $this->input->post('password');
-        $database = $this->input->post('database');
+        if ($this->form_validation->run() === FALSE) {
+            $this->load->view('install/header', $this->data);
+            $this->load->view('install/step_1', $this->data);
+            $this->load->view('install/footer', $this->data);
+        } else {
+            $db_data = [
+                'hostname' => $this->input->post('hostname'),
+                'username' => $this->input->post('username'),
+                'password' => $this->input->post('password'),
+                'database' => $this->input->post('database'),
+            ];
 
-        if ($this->install_model->validate_database_credentials($hostname, $username, $password, $database))
-        {
-            //create uploads directories
-            if (!is_dir('./uploads')) {
-                mkdir('./uploads', 0755, TRUE);
+            if ($this->Install_model->create_database($db_data) && $this->Install_model->create_tables($db_data)) {
+                $this->session->set_userdata('db_data', $db_data);
+                redirect('install/step_2');
+            } else {
+                $this->data['error'] = 'Database connection or creation failed. Please check your credentials and try again.';
+                $this->load->view('install/header', $this->data);
+                $this->load->view('install/step_1', $this->data);
+                $this->load->view('install/footer', $this->data);
             }
-            if (!is_dir('./uploads/slider')) {
-                mkdir('./uploads/slider', 0755, TRUE);
-            }
-            if (!is_dir('./uploads/slider/webp')) {
-                mkdir('./uploads/slider/webp', 0755, TRUE);
-            }
-            if (!is_dir('./uploads/gallery')) {
-                mkdir('./uploads/gallery', 0755, TRUE);
-            }
-            if (!is_dir('./uploads/gallery/webp')) {
-                mkdir('./uploads/gallery/webp', 0755, TRUE);
-            }
-            if (!is_dir('./uploads/logo')) {
-                mkdir('./uploads/logo', 0755, TRUE);
-            }
-            if (!is_dir('./uploads/logo/webp')) {
-                mkdir('./uploads/logo/webp', 0755, TRUE);
-            }
-            if (!is_dir('./uploads/favicon')) {
-                mkdir('./uploads/favicon', 0755, TRUE);
-            }
-
-            //write to database.php
-            $data = file_get_contents(APPPATH.'config/database.php');
-            $data = str_replace(
-                array(
-                    '$database_host     = "localhost"',
-                    '$database_user     = \'root\'',
-                    '$database_password = \'\'',
-                    '$database_name     = \'landingcms\''
-                ),
-                array(
-                    '$database_host     = "'.$hostname.'"',
-                    '$database_user     = \''.$username.'\'',
-                    '$database_password = \''.$password.'\'',
-                    '$database_name     = \''.$database.'\''
-                ),
-                $data
-            );
-            write_file(APPPATH.'config/database.php', $data);
-
-            //write to config.php
-            $data = file_get_contents(APPPATH.'config/config.php');
-            $data = str_replace(
-                array(
-                    '$local_folder = \'landingcms\''
-                ),
-                array(
-                    '$local_folder = \''.trim(str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']), '/').'\''
-                ),
-                $data
-            );
-            write_file(APPPATH.'config/config.php', $data);
-
-            //run migrations
-            $this->load->library('migration');
-            if ($this->migration->latest() === FALSE)
-            {
-                show_error($this->migration->error_string());
-            }
-            else
-            {
-                $this->load->library('ion_auth');
-                $this->load->view('templates/installer_header');
-                $this->load->view('install/step3');
-                $this->load->view('templates/installer_footer');
-            }
-        }
-        else
-        {
-            show_error('Invalid database credentials.');
         }
     }
 
-    public function step4()
-    {
-        //upload logo
-		$config['upload_path']          = './uploads/logo/';
-		$config['allowed_types']        = 'gif|jpg|png|jpeg';
-		$config['max_size']             = 2048;
-		$config['max_width']            = 1920;
-		$config['max_height']           = 1080;
+    public function step_2() {
+        $this->data['section'] = 'Admin Account';
+        $this->form_validation->set_rules('username', 'Username', 'required');
+        $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
+        $this->form_validation->set_rules('password', 'Password', 'required|min_length[8]');
 
-		$this->load->library('upload', $config);
+        if ($this->form_validation->run() === FALSE) {
+            $this->load->view('install/header', $this->data);
+            $this->load->view('install/step_2', $this->data);
+            $this->load->view('install/footer', $this->data);
+        } else {
+            $admin_data = [
+                'username' => $this->input->post('username'),
+                'email' => $this->input->post('email'),
+                'password' => $this->input->post('password'),
+            ];
 
-		if ( ! $this->upload->do_upload('logo'))
-		{
-			$this->install_model->save_site_info($this->input->post('site_title'), 'https://placehold.co/150x50');
-			$this->load->view('templates/installer_header');
-			$this->load->view('install/step4');
-			$this->load->view('templates/installer_footer');
-		}
-		else
-		{
-			$data = array('upload_data' => $this->upload->data());
-			$this->load->library('image_lib');
-			$config['image_library'] = 'gd2';
-			$config['source_image'] = $data['upload_data']['full_path'];
-			$config['create_thumb'] = FALSE;
-			$config['maintain_ratio'] = TRUE;
-			$config['width']         = 200;
-			$config['height']       = 200;
-			$config['new_image'] = './uploads/logo/webp/'.$data['upload_data']['raw_name'].'.webp';
-			$config['quality'] = '80%';
-			$this->image_lib->initialize($config);
-			$this->image_lib->resize();
-			$this->image_lib->clear();
-
-			$this->install_model->save_site_info($this->input->post('site_title'), $config['new_image']);
-
-			$this->load->view('templates/installer_header');
-			$this->load->view('install/step4');
-			$this->load->view('templates/installer_footer');
-		}
+            $db_data = $this->session->userdata('db_data');
+            if ($this->Install_model->create_admin($db_data, $admin_data)) {
+                redirect('install/step_3');
+            } else {
+                $this->data['error'] = 'Failed to create admin user. Please try again.';
+                $this->load->view('install/header', $this->data);
+                $this->load->view('install/step_2', $this->data);
+                $this->load->view('install/footer', $this->data);
+            }
+        }
     }
 
+    public function step_3() {
+        $this->data['section'] = 'Website Settings';
+        $this->form_validation->set_rules('site_title', 'Site Title', 'required');
+
+        if ($this->form_validation->run() === FALSE) {
+            $this->load->view('install/header', $this->data);
+            $this->load->view('install/step_3', $this->data);
+            $this->load->view('install/footer', $this->data);
+        } else {
+            $site_data = [
+                'site_title' => $this->input->post('site_title'),
+            ];
+            $db_data = $this->session->userdata('db_data');
+            if ($this->Install_model->save_settings($db_data, $site_data)) {
+                $this->Install_model->finalize_installation($db_data);
+                redirect('install/complete');
+            } else {
+                $this->data['error'] = 'Failed to save settings. Please try again.';
+                $this->load->view('install/header', $this->data);
+                $this->load->view('install/step_3', $this->data);
+                $this->load->view('install/footer', $this->data);
+            }
+        }
+    }
+
+    public function complete() {
+        $this->data['section'] = 'Installation Complete';
+        $this->load->view('install/header', $this->data);
+        $this->load->view('install/complete', $this->data);
+        $this->load->view('install/footer', $this->data);
+    }
 }
-
-/* End of file Install.php */
-/* Location: ./application/controllers/Install.php */
