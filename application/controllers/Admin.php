@@ -237,4 +237,39 @@ class Admin extends CI_Controller {
 			redirect('admin/logo');
 		}
 	}
+
+	public function favicon()
+	{
+		$this->load->view('admin/favicon');
+	}
+
+	public function upload_favicon()
+	{
+		$config['upload_path']          = './uploads/favicon/';
+		$config['allowed_types']        = 'gif|jpg|png|jpeg|ico';
+		$config['max_size']             = 2048;
+		$config['max_width']            = 32;
+		$config['max_height']           = 32;
+
+		$this->load->library('upload', $config);
+
+		if ( ! $this->upload->do_upload('image'))
+		{
+			$error = array('error' => $this->upload->display_errors());
+			$this->load->view('admin/favicon', $error);
+		}
+		else
+		{
+			$data = array('upload_data' => $this->upload->data());
+
+			//save to database
+			$this->db->where('id', 1);
+			$this->db->update('settings', array('favicon' => 'uploads/favicon/'.$data['upload_data']['file_name']));
+
+			redirect('admin/favicon');
+		}
+	}
 }
+
+/* End of file Admin.php */
+/* Location: ./application/controllers/Admin.php */

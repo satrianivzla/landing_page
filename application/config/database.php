@@ -73,13 +73,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $active_group = 'default';
 $query_builder = TRUE;
 
+$database_host     = "localhost";
+$database_user     = 'root';
+$database_password = '';
+$database_name     = 'landingcms';
+
 $db['default'] = array(
-	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => 'root',
-	'password' => 'root',
-	'database' => 'codeigniter',
-	'dbdriver' => 'mysqli',
+	'dsn'	=> 'mysql:host='.$database_host.';dbname='.$database_name.';charset=utf8mb4',
+	'hostname' => $database_host, // doesn't matter if this is defined or otherwise, apparently
+	'username' => $database_user ,
+	'password' => $database_password,
+	'database' => $database_name,
+	'dbdriver' => 'pdo',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
@@ -94,3 +99,6 @@ $db['default'] = array(
 	'failover' => array(),
 	'save_queries' => TRUE
 );
+
+/* End of file database.php */
+/* Location: ./application/config/database.php */

@@ -23,7 +23,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://localhost/';
+// this value can come from catch it using a PHP function that took
+// the software located folder from the URL
+$local_folder = 'landingcms';
+// this value can come from catch it using a PHP function
+$online_domain = "http://www.mydomain.com/";
+
+switch($_SERVER["SERVER_NAME"]) {
+    case "localhost":
+        $config['base_url'] = 'http://localhost/'.$local_folder.'/';
+        break;
+    case "mydomain.com":
+        $config["base_url"] = $online_domain;
+        break;
+}
 
 /*
 |--------------------------------------------------------------------------

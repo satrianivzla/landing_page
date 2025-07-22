@@ -1,4 +1,4 @@
-<?php $this->load->view('templates/header', array('logo' => $logo)); ?>
+<?php $this->load->view('templates/header', array('logo' => $logo, 'favicon' => $favicon)); ?>
 
 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
   <div class="carousel-indicators">
@@ -8,13 +8,13 @@
   </div>
   <div class="carousel-inner">
     <div class="carousel-item active">
-      <img src="https://via.placeholder.com/800x400.png?text=First+slide" class="d-block w-100" alt="...">
+      <img src="https://placehold.co/800x400.png?text=First+slide" class="d-block w-100" alt="...">
     </div>
     <div class="carousel-item">
-      <img src="https://via.placeholder.com/800x400.png?text=Second+slide" class="d-block w-100" alt="...">
+      <img src="https://placehold.co/800x400.png?text=Second+slide" class="d-block w-100" alt="...">
     </div>
     <div class="carousel-item">
-      <img src="https://via.placeholder.com/800x400.png?text=Third+slide" class="d-block w-100" alt="...">
+      <img src="https://placehold.co/800x400.png?text=Third+slide" class="d-block w-100" alt="...">
     </div>
   </div>
   <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -103,8 +103,8 @@
         </div>
         <div class="row no-gutters mt-4">
             <div class="col-lg-4 col-sm-6">
-                <a class="portfolio-box" href="https://via.placeholder.com/800x600.png?text=Image+1">
-                    <img class="img-fluid" src="https://via.placeholder.com/400x300.png?text=Image+1" alt="">
+                <a class="portfolio-box" href="https://placehold.co/800x600.png?text=Image+1">
+                    <img class="img-fluid" src="https://placehold.co/400x300.png?text=Image+1" alt="">
                     <div class="portfolio-box-caption">
                         <div class="portfolio-box-caption-content">
                             <div class="project-category text-faded">
@@ -118,8 +118,8 @@
                 </a>
             </div>
             <div class="col-lg-4 col-sm-6">
-                <a class="portfolio-box" href="https://via.placeholder.com/800x600.png?text=Image+2">
-                    <img class="img-fluid" src="https://via.placeholder.com/400x300.png?text=Image+2" alt="">
+                <a class="portfolio-box" href="https://placehold.co/800x600.png?text=Image+2">
+                    <img class="img-fluid" src="https://placehold.co/400x300.png?text=Image+2" alt="">
                     <div class="portfolio-box-caption">
                         <div class="portfolio-box-caption-content">
                             <div class="project-category text-faded">
@@ -133,8 +133,8 @@
                 </a>
             </div>
             <div class="col-lg-4 col-sm-6">
-                <a class="portfolio-box" href="https://via.placeholder.com/800x600.png?text=Image+3">
-                    <img class="img-fluid" src="https://via.placeholder.com/400x300.png?text=Image+3" alt="">
+                <a class="portfolio-box" href="https://placehold.co/800x600.png?text=Image+3">
+                    <img class="img-fluid" src="https://placehold.co/400x300.png?text=Image+3" alt="">
                     <div class="portfolio-box-caption">
                         <div class="portfolio-box-caption-content">
                             <div class="project-category text-faded">
@@ -220,25 +220,7 @@
 <a href="https://wa.me/1234567890" class="float" target="_blank">
 <i class="fa fa-whatsapp my-float"></i>
 </a>
-<style>
-.float{
-	position:fixed;
-	width:60px;
-	height:60px;
-	bottom:40px;
-	right:40px;
-	background-color:#25d366;
-	color:#FFF;
-	border-radius:50px;
-	text-align:center;
-	font-size:30px;
-	box-shadow: 2px 2px 3px #999;
-}
 
-.my-float{
-	margin-top:16px;
-}
-</style>
 <footer class="bg-light py-5">
     <div class="container">
         <div class="row">
