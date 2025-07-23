@@ -15,6 +15,7 @@ class Admin extends CI_Controller {
         $this->load->helper('url');
         $this->load->helper('form');
         $this->load->library('form_validation');
+        $this->load->library('upload');
     }
 
     public function index()
@@ -30,6 +31,8 @@ class Admin extends CI_Controller {
     {
         $data['title'] = 'Settings';
         $this->form_validation->set_rules('site_title', 'Site Title', 'required');
+        $this->form_validation->set_rules('meta_description', 'Meta Description', 'required');
+        $this->form_validation->set_rules('meta_keywords', 'Meta Keywords', 'required');
         $this->form_validation->set_rules('countdown_date', 'Countdown Date', 'required');
 
         if ($this->form_validation->run() === FALSE)
@@ -43,12 +46,55 @@ class Admin extends CI_Controller {
         {
             $settings_data = [
                 'site_title' => $this->input->post('site_title'),
+                'meta_description' => $this->input->post('meta_description'),
+                'meta_keywords' => $this->input->post('meta_keywords'),
                 'countdown_date' => $this->input->post('countdown_date'),
                 'show_about' => $this->input->post('show_about') ? 1 : 0,
                 'show_services' => $this->input->post('show_services') ? 1 : 0,
                 'show_gallery' => $this->input->post('show_gallery') ? 1 : 0,
                 'show_contact' => $this->input->post('show_contact') ? 1 : 0,
             ];
+
+            // Handle logo upload
+            if (!empty($_FILES['logo']['name'])) {
+                $config['upload_path'] = './uploads/';
+                $config['allowed_types'] = 'gif|jpg|png|webp';
+                $config['file_name'] = 'logo';
+                $config['overwrite'] = TRUE;
+                $this->upload->initialize($config);
+                if ($this->upload->do_upload('logo')) {
+                    $upload_data = $this->upload->data();
+                    $settings_data['logo'] = $upload_data['file_name'];
+                } else {
+                    $data['error'] = $this->upload->display_errors();
+                    $data['settings'] = $this->settings_model->get_settings();
+                    $this->load->view('admin/templates/header', $data);
+                    $this->load->view('admin/settings', $data);
+                    $this->load->view('admin/templates/footer', $data);
+                    return;
+                }
+            }
+
+            // Handle favicon upload
+            if (!empty($_FILES['favicon']['name'])) {
+                $config['upload_path'] = './uploads/';
+                $config['allowed_types'] = 'ico';
+                $config['file_name'] = 'favicon';
+                $config['overwrite'] = TRUE;
+                $this->upload->initialize($config);
+                if ($this->upload->do_upload('favicon')) {
+                    $upload_data = $this->upload->data();
+                    $settings_data['favicon'] = $upload_data['file_name'];
+                } else {
+                    $data['error'] = $this->upload->display_errors();
+                    $data['settings'] = $this->settings_model->get_settings();
+                    $this->load->view('admin/templates/header', $data);
+                    $this->load->view('admin/settings', $data);
+                    $this->load->view('admin/templates/footer', $data);
+                    return;
+                }
+            }
+
             $this->settings_model->update_settings($settings_data);
             redirect('admin/settings');
         }
