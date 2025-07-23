@@ -32,6 +32,50 @@
         <img src="<?php echo base_url('uploads/' . $settings['favicon']); ?>" alt="Favicon" width="32">
     <?php endif; ?>
 </div>
+<div class="mb-3">
+    <label for="account_whatsapp" class="form-label">WhatsApp</label>
+    <input type="text" name="account_whatsapp" id="account_whatsapp" class="form-control" value="<?php echo $settings['account_whatsapp']; ?>">
+</div>
+<div class="mb-3">
+    <label for="account_instagram" class="form-label">Instagram</label>
+    <input type="text" name="account_instagram" id="account_instagram" class="form-control" value="<?php echo $settings['account_instagram']; ?>">
+</div>
+<div class="mb-3">
+    <label for="account_tiktok" class="form-label">TikTok</label>
+    <input type="text" name="account_tiktok" id="account_tiktok" class="form-control" value="<?php echo $settings['account_tiktok']; ?>">
+</div>
+<div class="mb-3">
+    <label for="account_facebook" class="form-label">Facebook</label>
+    <input type="text" name="account_facebook" id="account_facebook" class="form-control" value="<?php echo $settings['account_facebook']; ?>">
+</div>
+<div class="mb-3">
+    <label for="account_twitter" class="form-label">Twitter</label>
+    <input type="text" name="account_twitter" id="account_twitter" class="form-control" value="<?php echo $settings['account_twitter']; ?>">
+</div>
+<div class="mb-3">
+    <label for="account_linkedin" class="form-label">LinkedIn</label>
+    <input type="text" name="account_linkedin" id="account_linkedin" class="form-control" value="<?php echo $settings['account_linkedin']; ?>">
+</div>
+<div class="mb-3">
+    <label for="contact_address" class="form-label">Address</label>
+    <input type="text" name="contact_address" id="contact_address" class="form-control" value="<?php echo $settings['contact_address']; ?>">
+</div>
+<div class="mb-3">
+    <label for="contact_phone" class="form-label">Phone</label>
+    <input type="text" name="contact_phone" id="contact_phone" class="form-control" value="<?php echo $settings['contact_phone']; ?>">
+</div>
+<div class="mb-3">
+    <label for="contact_email" class="form-label">Email</label>
+    <input type="text" name="contact_email" id="contact_email" class="form-control" value="<?php echo $settings['contact_email']; ?>">
+</div>
+<div class="mb-3">
+    <label for="opening_days" class="form-label">Opening Days</label>
+    <input type="text" name="opening_days" id="opening_days" class="form-control" value="<?php echo $settings['opening_days']; ?>">
+</div>
+<div class="mb-3">
+    <label for="opening_hours" class="form-label">Opening Hours</label>
+    <input type="text" name="opening_hours" id="opening_hours" class="form-control" value="<?php echo $settings['opening_hours']; ?>">
+</div>
 <div class="mb-3 form-check">
     <input type="checkbox" name="show_about" id="show_about" class="form-check-input" value="1" <?php echo $settings['show_about'] ? 'checked' : ''; ?>>
     <label for="show_about" class="form-check-label">Show About Us Section</label>

@@ -42,10 +42,12 @@ $countdown = date("Y/m/d", strtotime($countdown_date));
           </div>
 
           <div class="social-links">
-            <a href="#" class="twitter"><i class="bi bi-twitter-x"></i></a>
-            <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
-            <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
-            <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+            <?php if (!empty($settings['account_whatsapp'])) { ?><a href="<?php echo $settings['account_whatsapp']; ?>" title="WhatsApp" target="_blank"><i class="bi bi-whatsapp"></i></a><?php } ?>
+            <?php if (!empty($settings['account_instagram'])) { ?><a href="<?php echo $settings['account_instagram']; ?>" title="Instagram" target="_blank"><i class="bi bi-instagram"></i></a><?php } ?>
+            <?php if (!empty($settings['account_tiktok'])) { ?><a href="<?php echo $settings['account_tiktok']; ?>" title="TikTok" target="_blank"><i class="bi bi-tiktok"></i></a><?php } ?>
+            <?php if (!empty($settings['account_facebook'])) { ?><a href="<?php echo $settings['account_facebook']; ?>" title="Facebook" target="_blank"><i class="bi bi-facebook"></i></a><?php } ?>
+            <?php if (!empty($settings['account_twitter'])) { ?><a href="<?php echo $settings['account_twitter']; ?>" title="Twitter" target="_blank"><i class="bi bi-twitter-x"></i></a><?php } ?>
+            <?php if (!empty($settings['account_linkedin'])) { ?><a href="<?php echo $settings['account_linkedin']; ?>" title="Linkedin" target="_blank"><i class="bi bi-linkedin"></i></a><?php } ?>
           </div>
 
         </div>
@@ -309,7 +311,7 @@ $countdown = date("Y/m/d", strtotime($countdown_date));
                 <i class="bi bi-geo-alt flex-shrink-0"></i>
                 <div>
                   <h3>Address</h3>
-                  <p>A108 Adam Street, New York, NY 535022</p>
+                  <p><?php echo $settings['contact_address']; ?></p>
                 </div>
               </div><!-- End Info Item -->
 
@@ -317,7 +319,7 @@ $countdown = date("Y/m/d", strtotime($countdown_date));
                 <i class="bi bi-telephone flex-shrink-0"></i>
                 <div>
                   <h3>Call Us</h3>
-                  <p>+1 5589 55488 55</p>
+                  <p><?php echo $settings['contact_phone']; ?></p>
                 </div>
               </div><!-- End Info Item -->
 
@@ -325,7 +327,15 @@ $countdown = date("Y/m/d", strtotime($countdown_date));
                 <i class="bi bi-envelope flex-shrink-0"></i>
                 <div>
                   <h3>Email Us</h3>
-                  <p>info@example.com</p>
+                  <p><?php echo $settings['contact_email']; ?></p>
+                </div>
+              </div><!-- End Info Item -->
+
+              <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="500">
+                <i class="bi bi-clock flex-shrink-0"></i>
+                <div>
+                  <h3>Opening Hours</h3>
+                  <p><?php echo $settings['opening_days']; ?>: <?php echo $settings['opening_hours']; ?></p>
                 </div>
               </div><!-- End Info Item -->
 

@@ -53,6 +53,17 @@ class Admin extends CI_Controller {
                 'show_services' => $this->input->post('show_services') ? 1 : 0,
                 'show_gallery' => $this->input->post('show_gallery') ? 1 : 0,
                 'show_contact' => $this->input->post('show_contact') ? 1 : 0,
+                'account_whatsapp' => $this->input->post('account_whatsapp'),
+                'account_instagram' => $this->input->post('account_instagram'),
+                'account_tiktok' => $this->input->post('account_tiktok'),
+                'account_facebook' => $this->input->post('account_facebook'),
+                'account_twitter' => $this->input->post('account_twitter'),
+                'account_linkedin' => $this->input->post('account_linkedin'),
+                'contact_address' => $this->input->post('contact_address'),
+                'contact_phone' => $this->input->post('contact_phone'),
+                'contact_email' => $this->input->post('contact_email'),
+                'opening_days' => $this->input->post('opening_days'),
+                'opening_hours' => $this->input->post('opening_hours'),
             ];
 
             // Handle logo upload

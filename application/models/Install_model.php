@@ -102,6 +102,17 @@ class Install_model extends CI_Model {
               `privacy_policy` text NOT NULL,
               `terms_of_use` text NOT NULL,
               `cookie_policy` text NOT NULL,
+              `account_whatsapp` varchar(255) DEFAULT NULL,
+              `account_instagram` varchar(255) DEFAULT NULL,
+              `account_tiktok` varchar(255) DEFAULT NULL,
+              `account_facebook` varchar(255) DEFAULT NULL,
+              `account_twitter` varchar(255) DEFAULT NULL,
+              `account_linkedin` varchar(255) DEFAULT NULL,
+              `contact_address` varchar(255) DEFAULT NULL,
+              `contact_phone` varchar(255) DEFAULT NULL,
+              `contact_email` varchar(255) DEFAULT NULL,
+              `opening_days` varchar(255) DEFAULT NULL,
+              `opening_hours` varchar(255) DEFAULT NULL,
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
         ");
@@ -113,8 +124,8 @@ class Install_model extends CI_Model {
             (2, 'members', 'General User');
         ");
         $this->db->query("
-            INSERT INTO `settings` (`id`, `logo`, `favicon`, `site_title`, `meta_description`, `meta_keywords`, `countdown_date`, `show_about`, `show_services`, `show_gallery`, `show_contact`, `about_us_content`, `services_content`, `contact_content`, `privacy_policy`, `terms_of_use`, `cookie_policy`) VALUES
-            (1, 'logo.png', 'favicon.ico', 'Coming Soon', 'Meta Description', 'Meta Keywords', '2025-12-31', 1, 1, 1, 1, 'About Us', 'Services', 'Contact', 'Privacy Policy', 'Terms of Use', 'Cookie Policy');
+            INSERT INTO `settings` (`id`, `logo`, `favicon`, `site_title`, `meta_description`, `meta_keywords`, `countdown_date`, `show_about`, `show_services`, `show_gallery`, `show_contact`, `about_us_content`, `services_content`, `contact_content`, `privacy_policy`, `terms_of_use`, `cookie_policy`, `account_whatsapp`, `account_instagram`, `account_tiktok`, `account_facebook`, `account_twitter`, `account_linkedin`, `contact_address`, `contact_phone`, `contact_email`, `opening_days`, `opening_hours`) VALUES
+            (1, 'logo.png', 'favicon.ico', 'Coming Soon', 'Meta Description', 'Meta Keywords', '2025-12-31', 1, 1, 1, 1, 'About Us', 'Services', 'Contact', 'Privacy Policy', 'Terms of Use', 'Cookie Policy', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
         ");
 
         return true;
