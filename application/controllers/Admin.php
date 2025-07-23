@@ -16,6 +16,7 @@ class Admin extends CI_Controller {
         $this->load->helper('form');
         $this->load->library('form_validation');
         $this->load->library('upload');
+        $this->load->library('image_lib');
     }
 
     public function index()
@@ -209,5 +210,82 @@ class Admin extends CI_Controller {
             $this->settings_model->update_settings($settings_data);
             redirect('admin/legal');
         }
+    }
+
+    public function upload_image() {
+        if (!$this->input->is_ajax_request()) {
+            show_404();
+            return;
+        }
+
+        if (!isset($_FILES["image"]["name"])) {
+            echo json_encode(['error' => 'No image file provided']);
+            return;
+        }
+
+        $uploadPath = './uploads/summernote/';
+        $this->createDirectoryIfNotExists($uploadPath);
+
+        $config = $this->getUploadConfig($uploadPath);
+        $this->upload->initialize($config);
+
+        if (!$this->upload->do_upload('image')) {
+            echo json_encode(['error' => $this->upload->display_errors()]);
+            return;
+        }
+
+        $data = $this->upload->data();
+        $this->compressImage($data['file_name'], $uploadPath);
+
+        echo json_encode(['url' => base_url("uploads/summernote/{$data['file_name']}")]);
+    }
+
+    public function delete_image() {
+        if (!$this->input->is_ajax_request()) {
+            show_404();
+            return;
+        }
+
+        $src = $this->input->post('src');
+        $fileName = str_replace(base_url(), '', $src);
+
+        if ($fileName && unlink($fileName)) {
+            echo json_encode(['message' => 'File deleted successfully']);
+        } else {
+            echo json_encode(['error' => 'File deletion failed']);
+        }
+    }
+
+    private function createDirectoryIfNotExists($path) {
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+    }
+
+    private function getUploadConfig($path) {
+        return [
+            'upload_path'   => $path,
+            'allowed_types' => 'jpg|jpeg|png|gif|webp',
+            'overwrite'     => true
+        ];
+    }
+
+    private function compressImage($fileName, $path) {
+        $config = [
+            'image_library'  => 'gd2',
+            'source_image'   => "{$path}{$fileName}",
+            'create_thumb'   => FALSE,
+            'maintain_ratio' => TRUE,
+            'quality'        => '60%',
+            'new_image'      => "{$path}{$fileName}"
+        ];
+
+        $this->image_lib->initialize($config);
+
+        if (!$this->image_lib->resize()) {
+            echo json_encode(['error' => $this->image_lib->display_errors()]);
+        }
+
+        $this->image_lib->clear();
     }
 }
