@@ -122,8 +122,17 @@ class Install_model extends CI_Model {
             CREATE TABLE `gallery` (
               `id` int(11) NOT NULL AUTO_INCREMENT,
               `title` varchar(255) NOT NULL,
-              `filter` varchar(255) NOT NULL,
+              `category_id` int(11) NOT NULL,
               `image` varchar(255) NOT NULL,
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        ");
+
+        // Create gallery_categories table
+        $this->db->query("
+            CREATE TABLE `gallery_categories` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `name` varchar(255) NOT NULL,
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
         ");

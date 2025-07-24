@@ -7,8 +7,12 @@
     <input type="text" name="title" id="title" class="form-control" value="<?php echo $image['title']; ?>">
 </div>
 <div class="mb-3">
-    <label for="filter" class="form-label">Filter</label>
-    <input type="text" name="filter" id="filter" class="form-control" value="<?php echo $image['filter']; ?>">
+    <label for="category_id" class="form-label">Category</label>
+    <select name="category_id" id="category_id" class="form-control">
+        <?php foreach ($categories as $category): ?>
+            <option value="<?php echo $category['id']; ?>" <?php if ($category['id'] == $image['category_id']) echo 'selected'; ?>><?php echo $category['name']; ?></option>
+        <?php endforeach; ?>
+    </select>
 </div>
 <div class="mb-3">
     <label for="image" class="form-label">Image</label>

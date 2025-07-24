@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 23, 2025 at 06:50 PM
+-- Generation Time: Jul 23, 2025 at 10:31 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -30,8 +30,19 @@ SET time_zone = "+00:00";
 CREATE TABLE `gallery` (
   `id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
-  `filter` varchar(255) NOT NULL,
+  `category_id` int(11) NOT NULL,
   `image` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gallery_categories`
+--
+
+CREATE TABLE `gallery_categories` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -162,6 +173,12 @@ ALTER TABLE `gallery`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `gallery_categories`
+--
+ALTER TABLE `gallery_categories`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `groups`
 --
 ALTER TABLE `groups`
@@ -204,6 +221,12 @@ ALTER TABLE `users_groups`
 -- AUTO_INCREMENT for table `gallery`
 --
 ALTER TABLE `gallery`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `gallery_categories`
+--
+ALTER TABLE `gallery_categories`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --

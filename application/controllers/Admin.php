@@ -13,6 +13,7 @@ class Admin extends CI_Controller {
         }
         $this->load->model('settings_model');
         $this->load->model('gallery_model');
+        $this->load->model('gallery_categories_model');
         $this->load->helper('url');
         $this->load->helper('form');
         $this->load->library('form_validation');
@@ -174,8 +175,9 @@ class Admin extends CI_Controller {
     public function add_gallery_image()
     {
         $data['title'] = 'Add Gallery Image';
+        $data['categories'] = $this->gallery_categories_model->get_categories();
         $this->form_validation->set_rules('title', 'Title', 'required');
-        $this->form_validation->set_rules('filter', 'Filter', 'required');
+        $this->form_validation->set_rules('category_id', 'Category', 'required');
 
         if ($this->form_validation->run() === FALSE)
         {
@@ -193,7 +195,7 @@ class Admin extends CI_Controller {
                 $upload_data = $this->upload->data();
                 $gallery_data = [
                     'title' => $this->input->post('title'),
-                    'filter' => $this->input->post('filter'),
+                    'category_id' => $this->input->post('category_id'),
                     'image' => $upload_data['file_name'],
                 ];
                 $this->gallery_model->insert_image($gallery_data);
@@ -213,8 +215,9 @@ class Admin extends CI_Controller {
     {
         $data['title'] = 'Edit Gallery Image';
         $data['image'] = $this->gallery_model->get_image($id);
+        $data['categories'] = $this->gallery_categories_model->get_categories();
         $this->form_validation->set_rules('title', 'Title', 'required');
-        $this->form_validation->set_rules('filter', 'Filter', 'required');
+        $this->form_validation->set_rules('category_id', 'Category', 'required');
 
         if ($this->form_validation->run() === FALSE)
         {
@@ -226,7 +229,7 @@ class Admin extends CI_Controller {
         {
             $gallery_data = [
                 'title' => $this->input->post('title'),
-                'filter' => $this->input->post('filter'),
+                'category_id' => $this->input->post('category_id'),
             ];
             if (!empty($_FILES['image']['name']))
             {
@@ -258,6 +261,64 @@ class Admin extends CI_Controller {
         unlink('./uploads/gallery/' . $image['image']);
         $this->gallery_model->delete_image($id);
         redirect('admin/gallery');
+    }
+
+    public function gallery_categories()
+    {
+        $data['title'] = 'Gallery Categories';
+        $data['categories'] = $this->gallery_categories_model->get_categories();
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/gallery_categories', $data);
+        $this->load->view('admin/templates/footer', $data);
+    }
+
+    public function add_gallery_category()
+    {
+        $data['title'] = 'Add Gallery Category';
+        $this->form_validation->set_rules('name', 'Name', 'required');
+
+        if ($this->form_validation->run() === FALSE)
+        {
+            $this->load->view('admin/templates/header', $data);
+            $this->load->view('admin/add_gallery_category', $data);
+            $this->load->view('admin/templates/footer', $data);
+        }
+        else
+        {
+            $category_data = [
+                'name' => $this->input->post('name'),
+            ];
+            $this->gallery_categories_model->insert_category($category_data);
+            redirect('admin/gallery_categories');
+        }
+    }
+
+    public function edit_gallery_category($id)
+    {
+        $data['title'] = 'Edit Gallery Category';
+        $data['category'] = $this->gallery_categories_model->get_category($id);
+        $this->form_validation->set_rules('name', 'Name', 'required');
+
+        if ($this->form_validation->run() === FALSE)
+        {
+            $this->load->view('admin/templates/header', $data);
+            $this->load->view('admin/edit_gallery_category', $data);
+            $this->load->view('admin/templates/footer', $data);
+        }
+        else
+        {
+            $category_data = [
+                'name' => $this->input->post('name'),
+            ];
+            $this->gallery_categories_model->update_category($id, $category_data);
+            redirect('admin/gallery_categories');
+        }
+    }
+
+    public function delete_gallery_category($id)
+    {
+        $this->gallery_categories_model->delete_category($id);
+        redirect('admin/gallery_categories');
     }
 
     public function contact()

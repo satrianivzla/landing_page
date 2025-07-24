@@ -129,27 +129,20 @@ $countdown = date("Y/m/d", strtotime($countdown_date));
 
           <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100">
             <li data-filter="*" class="filter-active">All</li>
-            <?php
-            $filters = [];
-            foreach ($gallery as $image) {
-                $filters[] = $image['filter'];
-            }
-            $filters = array_unique($filters);
-            foreach ($filters as $filter) {
-                echo '<li data-filter=".filter-' . $filter . '">' . ucfirst($filter) . '</li>';
-            }
-            ?>
+            <?php foreach ($gallery_categories as $category): ?>
+                <li data-filter=".filter-<?php echo $category['name']; ?>"><?php echo $category['name']; ?></li>
+            <?php endforeach; ?>
           </ul><!-- End Portfolio Filters -->
 
           <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
             <?php foreach ($gallery as $image): ?>
-            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-<?php echo $image['filter']; ?>">
+            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-<?php echo $image['category_id']; ?>">
               <div class="portfolio-content h-100">
                 <img src="<?php echo base_url('uploads/gallery/' . $image['image']); ?>" class="img-fluid" alt="">
                 <div class="portfolio-info">
                   <h4><?php echo $image['title']; ?></h4>
                   <p>Lorem ipsum, dolor sit amet consectetur</p>
-                  <a href="<?php echo base_url('uploads/gallery/' . $image['image']); ?>" title="<?php echo $image['title']; ?>" data-gallery="portfolio-gallery-<?php echo $image['filter']; ?>" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
+                  <a href="<?php echo base_url('uploads/gallery/' . $image['image']); ?>" title="<?php echo $image['title']; ?>" data-gallery="portfolio-gallery-<?php echo $image['category_id']; ?>" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
                   <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
                 </div>
               </div>
