@@ -12,6 +12,7 @@ class Admin extends CI_Controller {
             redirect('auth/login', 'refresh');
         }
         $this->load->model('settings_model');
+        $this->load->model('gallery_model');
         $this->load->helper('url');
         $this->load->helper('form');
         $this->load->library('form_validation');
@@ -89,14 +90,19 @@ class Admin extends CI_Controller {
 
             // Handle favicon upload
             if (!empty($_FILES['favicon']['name'])) {
-                $config['upload_path'] = './uploads/';
-                $config['allowed_types'] = 'ico';
+                $config['upload_path'] = './uploads/favicon/';
+                $config['allowed_types'] = 'zip';
                 $config['file_name'] = 'favicon';
                 $config['overwrite'] = TRUE;
                 $this->upload->initialize($config);
                 if ($this->upload->do_upload('favicon')) {
                     $upload_data = $this->upload->data();
-                    $settings_data['favicon'] = $upload_data['file_name'];
+                    $zip = new ZipArchive;
+                    if ($zip->open($upload_data['full_path']) === TRUE) {
+                        $zip->extractTo('./uploads/favicon/');
+                        $zip->close();
+                        $settings_data['favicon'] = 'favicon';
+                    }
                 } else {
                     $data['error'] = $this->upload->display_errors();
                     $data['settings'] = $this->settings_model->get_settings();
@@ -159,9 +165,99 @@ class Admin extends CI_Controller {
     public function gallery()
     {
         $data['title'] = 'Gallery';
+        $data['gallery'] = $this->gallery_model->get_gallery();
         $this->load->view('admin/templates/header', $data);
         $this->load->view('admin/gallery', $data);
         $this->load->view('admin/templates/footer', $data);
+    }
+
+    public function add_gallery_image()
+    {
+        $data['title'] = 'Add Gallery Image';
+        $this->form_validation->set_rules('title', 'Title', 'required');
+        $this->form_validation->set_rules('filter', 'Filter', 'required');
+
+        if ($this->form_validation->run() === FALSE)
+        {
+            $this->load->view('admin/templates/header', $data);
+            $this->load->view('admin/add_gallery_image', $data);
+            $this->load->view('admin/templates/footer', $data);
+        }
+        else
+        {
+            $config['upload_path'] = './uploads/gallery/';
+            $config['allowed_types'] = 'gif|jpg|png|webp';
+            $this->upload->initialize($config);
+            if ($this->upload->do_upload('image'))
+            {
+                $upload_data = $this->upload->data();
+                $gallery_data = [
+                    'title' => $this->input->post('title'),
+                    'filter' => $this->input->post('filter'),
+                    'image' => $upload_data['file_name'],
+                ];
+                $this->gallery_model->insert_image($gallery_data);
+                redirect('admin/gallery');
+            }
+            else
+            {
+                $data['error'] = $this->upload->display_errors();
+                $this->load->view('admin/templates/header', $data);
+                $this->load->view('admin/add_gallery_image', $data);
+                $this->load->view('admin/templates/footer', $data);
+            }
+        }
+    }
+
+    public function edit_gallery_image($id)
+    {
+        $data['title'] = 'Edit Gallery Image';
+        $data['image'] = $this->gallery_model->get_image($id);
+        $this->form_validation->set_rules('title', 'Title', 'required');
+        $this->form_validation->set_rules('filter', 'Filter', 'required');
+
+        if ($this->form_validation->run() === FALSE)
+        {
+            $this->load->view('admin/templates/header', $data);
+            $this->load->view('admin/edit_gallery_image', $data);
+            $this->load->view('admin/templates/footer', $data);
+        }
+        else
+        {
+            $gallery_data = [
+                'title' => $this->input->post('title'),
+                'filter' => $this->input->post('filter'),
+            ];
+            if (!empty($_FILES['image']['name']))
+            {
+                $config['upload_path'] = './uploads/gallery/';
+                $config['allowed_types'] = 'gif|jpg|png|webp';
+                $this->upload->initialize($config);
+                if ($this->upload->do_upload('image'))
+                {
+                    $upload_data = $this->upload->data();
+                    $gallery_data['image'] = $upload_data['file_name'];
+                }
+                else
+                {
+                    $data['error'] = $this->upload->display_errors();
+                    $this->load->view('admin/templates/header', $data);
+                    $this->load->view('admin/edit_gallery_image', $data);
+                    $this->load->view('admin/templates/footer', $data);
+                    return;
+                }
+            }
+            $this->gallery_model->update_image($id, $gallery_data);
+            redirect('admin/gallery');
+        }
+    }
+
+    public function delete_gallery_image($id)
+    {
+        $image = $this->gallery_model->get_image($id);
+        unlink('./uploads/gallery/' . $image['image']);
+        $this->gallery_model->delete_image($id);
+        redirect('admin/gallery');
     }
 
     public function contact()

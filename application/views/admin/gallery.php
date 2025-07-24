@@ -1,2 +1,25 @@
 <h1>Gallery</h1>
-<p>This is where you will manage your gallery images.</p>
+<a href="<?php echo site_url('admin/add_gallery_image'); ?>" class="btn btn-primary mb-3">Add Image</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Filter</th>
+            <th>Image</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($gallery as $image): ?>
+            <tr>
+                <td><?php echo $image['title']; ?></td>
+                <td><?php echo $image['filter']; ?></td>
+                <td><img src="<?php echo base_url('uploads/gallery/' . $image['image']); ?>" width="100"></td>
+                <td>
+                    <a href="<?php echo site_url('admin/edit_gallery_image/' . $image['id']); ?>" class="btn btn-sm btn-info">Edit</a>
+                    <a href="<?php echo site_url('admin/delete_gallery_image/' . $image['id']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this image?')">Delete</a>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
