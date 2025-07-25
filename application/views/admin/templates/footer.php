@@ -67,6 +67,9 @@
 
         $('#galleryTable').DataTable();
         $('#categoriesTable').DataTable();
+        $('#visitorsTable').DataTable();
+        $('#bannedIpsTable').DataTable();
+        $('#auditTable').DataTable();
     });
 </script>
 </body>

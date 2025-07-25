@@ -15,11 +15,25 @@ class Admin extends CI_Controller {
         $this->load->model('gallery_model');
         $this->load->model('gallery_categories_model');
         $this->load->model('visitor_model');
+        $this->load->model('audit_trail_model');
         $this->load->helper('url');
         $this->load->helper('form');
         $this->load->library('form_validation');
         $this->load->library('upload');
         $this->load->library('image_lib');
+    }
+
+    private function _log_audit($action, $table_name, $record_id, $old_values = null, $new_values = null)
+    {
+        $data = [
+            'user_id' => $this->ion_auth->user()->row()->id,
+            'action' => $action,
+            'table_name' => $table_name,
+            'record_id' => $record_id,
+            'old_values' => json_encode($old_values),
+            'new_values' => json_encode($new_values)
+        ];
+        $this->audit_trail_model->log_audit($data);
     }
 
     public function index()
@@ -35,6 +49,7 @@ class Admin extends CI_Controller {
     public function settings()
     {
         $data['title'] = 'Settings';
+        $old_settings = $this->settings_model->get_settings();
         $this->form_validation->set_rules('site_title', 'Site Title', 'required');
         $this->form_validation->set_rules('meta_description', 'Meta Description', 'required');
         $this->form_validation->set_rules('meta_keywords', 'Meta Keywords', 'required');
@@ -42,7 +57,7 @@ class Admin extends CI_Controller {
 
         if ($this->form_validation->run() === FALSE)
         {
-            $data['settings'] = $this->settings_model->get_settings();
+            $data['settings'] = $old_settings;
             $this->load->view('admin/templates/header', $data);
             $this->load->view('admin/settings', $data);
             $this->load->view('admin/templates/footer', $data);
@@ -83,7 +98,7 @@ class Admin extends CI_Controller {
                     $settings_data['logo'] = $upload_data['file_name'];
                 } else {
                     $data['error'] = $this->upload->display_errors();
-                    $data['settings'] = $this->settings_model->get_settings();
+                    $data['settings'] = $old_settings;
                     $this->load->view('admin/templates/header', $data);
                     $this->load->view('admin/settings', $data);
                     $this->load->view('admin/templates/footer', $data);
@@ -108,7 +123,7 @@ class Admin extends CI_Controller {
                     }
                 } else {
                     $data['error'] = $this->upload->display_errors();
-                    $data['settings'] = $this->settings_model->get_settings();
+                    $data['settings'] = $old_settings;
                     $this->load->view('admin/templates/header', $data);
                     $this->load->view('admin/settings', $data);
                     $this->load->view('admin/templates/footer', $data);
@@ -117,6 +132,7 @@ class Admin extends CI_Controller {
             }
 
             $this->settings_model->update_settings($settings_data);
+            $this->_log_audit('update', 'settings', 1, $old_settings, $settings_data);
             redirect('admin/settings');
         }
     }
@@ -124,11 +140,12 @@ class Admin extends CI_Controller {
     public function about()
     {
         $data['title'] = 'About Us';
+        $old_settings = $this->settings_model->get_settings();
         $this->form_validation->set_rules('about_us_content', 'About Us Content', 'required');
 
         if ($this->form_validation->run() === FALSE)
         {
-            $data['settings'] = $this->settings_model->get_settings();
+            $data['settings'] = $old_settings;
             $this->load->view('admin/templates/header', $data);
             $this->load->view('admin/about', $data);
             $this->load->view('admin/templates/footer', $data);
@@ -139,6 +156,7 @@ class Admin extends CI_Controller {
                 'about_us_content' => $this->input->post('about_us_content'),
             ];
             $this->settings_model->update_settings($settings_data);
+            $this->_log_audit('update', 'settings', 1, ['about_us_content' => $old_settings['about_us_content']], $settings_data);
             redirect('admin/about');
         }
     }
@@ -146,11 +164,12 @@ class Admin extends CI_Controller {
     public function services()
     {
         $data['title'] = 'Services';
+        $old_settings = $this->settings_model->get_settings();
         $this->form_validation->set_rules('services_content', 'Services Content', 'required');
 
         if ($this->form_validation->run() === FALSE)
         {
-            $data['settings'] = $this->settings_model->get_settings();
+            $data['settings'] = $old_settings;
             $this->load->view('admin/templates/header', $data);
             $this->load->view('admin/services', $data);
             $this->load->view('admin/templates/footer', $data);
@@ -161,6 +180,7 @@ class Admin extends CI_Controller {
                 'services_content' => $this->input->post('services_content'),
             ];
             $this->settings_model->update_settings($settings_data);
+            $this->_log_audit('update', 'settings', 1, ['services_content' => $old_settings['services_content']], $settings_data);
             redirect('admin/services');
         }
     }
@@ -201,6 +221,7 @@ class Admin extends CI_Controller {
                     'image' => $upload_data['file_name'],
                 ];
                 $this->gallery_model->insert_image($gallery_data);
+                $this->_log_audit('insert', 'gallery', $this->db->insert_id(), null, $gallery_data);
                 redirect('admin/gallery');
             }
             else
@@ -218,6 +239,7 @@ class Admin extends CI_Controller {
         $data['title'] = 'Edit Gallery Image';
         $data['image'] = $this->gallery_model->get_image($id);
         $data['categories'] = $this->gallery_categories_model->get_categories();
+        $old_image_data = $data['image'];
         $this->form_validation->set_rules('title', 'Title', 'required');
         $this->form_validation->set_rules('category_id', 'Category', 'required');
 
@@ -242,6 +264,7 @@ class Admin extends CI_Controller {
                 {
                     $upload_data = $this->upload->data();
                     $gallery_data['image'] = $upload_data['file_name'];
+                    unlink('./uploads/gallery/' . $old_image_data['image']);
                 }
                 else
                 {
@@ -253,6 +276,7 @@ class Admin extends CI_Controller {
                 }
             }
             $this->gallery_model->update_image($id, $gallery_data);
+            $this->_log_audit('update', 'gallery', $id, $old_image_data, $gallery_data);
             redirect('admin/gallery');
         }
     }
@@ -262,6 +286,7 @@ class Admin extends CI_Controller {
         $image = $this->gallery_model->get_image($id);
         unlink('./uploads/gallery/' . $image['image']);
         $this->gallery_model->delete_image($id);
+        $this->_log_audit('delete', 'gallery', $id, $image);
         redirect('admin/gallery');
     }
 
@@ -291,6 +316,7 @@ class Admin extends CI_Controller {
                 'name' => $this->input->post('name'),
             ];
             $this->gallery_categories_model->insert_category($category_data);
+            $this->_log_audit('insert', 'gallery_categories', $this->db->insert_id(), null, $category_data);
             redirect('admin/gallery_categories');
         }
     }
@@ -299,6 +325,7 @@ class Admin extends CI_Controller {
     {
         $data['title'] = 'Edit Gallery Category';
         $data['category'] = $this->gallery_categories_model->get_category($id);
+        $old_category_data = $data['category'];
         $this->form_validation->set_rules('name', 'Name', 'required');
 
         if ($this->form_validation->run() === FALSE)
@@ -313,13 +340,16 @@ class Admin extends CI_Controller {
                 'name' => $this->input->post('name'),
             ];
             $this->gallery_categories_model->update_category($id, $category_data);
+            $this->_log_audit('update', 'gallery_categories', $id, $old_category_data, $category_data);
             redirect('admin/gallery_categories');
         }
     }
 
     public function delete_gallery_category($id)
     {
+        $category = $this->gallery_categories_model->get_category($id);
         $this->gallery_categories_model->delete_category($id);
+        $this->_log_audit('delete', 'gallery_categories', $id, $category);
         redirect('admin/gallery_categories');
     }
 
@@ -344,23 +374,36 @@ class Admin extends CI_Controller {
     public function ban_ip($ip_address)
     {
         $this->visitor_model->ban_ip($ip_address);
+        $this->_log_audit('ban', 'banned_ips', 0, null, ['ip_address' => $ip_address]);
         redirect('admin/visitors');
     }
 
     public function unban_ip($id)
     {
+        $banned_ip = $this->visitor_model->get_banned_ip($id);
         $this->visitor_model->unban_ip($id);
+        $this->_log_audit('unban', 'banned_ips', $id, $banned_ip);
         redirect('admin/banned_ips');
+    }
+
+    public function audit_trail()
+    {
+        $data['title'] = 'Audit Trail';
+        $data['audit_trail'] = $this->audit_trail_model->get_audit_trail();
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/audit_trail', $data);
+        $this->load->view('admin/templates/footer', $data);
     }
 
     public function contact()
     {
         $data['title'] = 'Contact';
+        $old_settings = $this->settings_model->get_settings();
         $this->form_validation->set_rules('contact_content', 'Contact Content', 'required');
 
         if ($this->form_validation->run() === FALSE)
         {
-            $data['settings'] = $this->settings_model->get_settings();
+            $data['settings'] = $old_settings;
             $this->load->view('admin/templates/header', $data);
             $this->load->view('admin/contact', $data);
             $this->load->view('admin/templates/footer', $data);
@@ -371,6 +414,7 @@ class Admin extends CI_Controller {
                 'contact_content' => $this->input->post('contact_content'),
             ];
             $this->settings_model->update_settings($settings_data);
+            $this->_log_audit('update', 'settings', 1, ['contact_content' => $old_settings['contact_content']], $settings_data);
             redirect('admin/contact');
         }
     }
@@ -378,13 +422,14 @@ class Admin extends CI_Controller {
     public function legal()
     {
         $data['title'] = 'Legal Documents';
+        $old_settings = $this->settings_model->get_settings();
         $this->form_validation->set_rules('privacy_policy', 'Privacy Policy', 'required');
         $this->form_validation->set_rules('terms_of_use', 'Terms of Use', 'required');
         $this->form_validation->set_rules('cookie_policy', 'Cookie Policy', 'required');
 
         if ($this->form_validation->run() === FALSE)
         {
-            $data['settings'] = $this->settings_model->get_settings();
+            $data['settings'] = $old_settings;
             $this->load->view('admin/templates/header', $data);
             $this->load->view('admin/legal', $data);
             $this->load->view('admin/templates/footer', $data);
@@ -397,6 +442,7 @@ class Admin extends CI_Controller {
                 'cookie_policy' => $this->input->post('cookie_policy'),
             ];
             $this->settings_model->update_settings($settings_data);
+            $this->_log_audit('update', 'settings', 1, ['privacy_policy' => $old_settings['privacy_policy'], 'terms_of_use' => $old_settings['terms_of_use'], 'cookie_policy' => $old_settings['cookie_policy']], $settings_data);
             redirect('admin/legal');
         }
     }

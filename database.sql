@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 25, 2025 at 09:38 AM
+-- Generation Time: Jul 25, 2025 at 11:59 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -20,6 +20,23 @@ SET time_zone = "+00:00";
 --
 -- Database: `coming_soon_cms`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `audit_trail`
+--
+
+CREATE TABLE `audit_trail` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) UNSIGNED NOT NULL,
+  `action` varchar(255) NOT NULL,
+  `table_name` varchar(255) NOT NULL,
+  `record_id` int(11) NOT NULL,
+  `old_values` text DEFAULT NULL,
+  `new_values` text DEFAULT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -192,6 +209,12 @@ CREATE TABLE `visitors` (
 --
 
 --
+-- Indexes for table `audit_trail`
+--
+ALTER TABLE `audit_trail`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `banned_ips`
 --
 ALTER TABLE `banned_ips`
@@ -253,6 +276,12 @@ ALTER TABLE `visitors`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `audit_trail`
+--
+ALTER TABLE `audit_trail`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `banned_ips`

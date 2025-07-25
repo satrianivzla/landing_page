@@ -158,6 +158,21 @@ class Install_model extends CI_Model {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
         ");
 
+        // Create audit_trail table
+        $this->db->query("
+            CREATE TABLE `audit_trail` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `user_id` int(11) unsigned NOT NULL,
+              `action` varchar(255) NOT NULL,
+              `table_name` varchar(255) NOT NULL,
+              `record_id` int(11) NOT NULL,
+              `old_values` text,
+              `new_values` text,
+              `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        ");
+
         // Insert default data
         $this->db->query("
             INSERT INTO `groups` (`id`, `name`, `description`) VALUES
