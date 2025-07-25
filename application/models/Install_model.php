@@ -137,6 +137,27 @@ class Install_model extends CI_Model {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
         ");
 
+        // Create visitors table
+        $this->db->query("
+            CREATE TABLE `visitors` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `ip_address` varchar(45) NOT NULL,
+              `user_agent` text NOT NULL,
+              `page_url` text NOT NULL,
+              `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        ");
+
+        // Create banned_ips table
+        $this->db->query("
+            CREATE TABLE `banned_ips` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `ip_address` varchar(45) NOT NULL,
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        ");
+
         // Insert default data
         $this->db->query("
             INSERT INTO `groups` (`id`, `name`, `description`) VALUES

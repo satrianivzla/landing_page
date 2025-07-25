@@ -9,7 +9,16 @@ class Home extends CI_Controller {
         $this->load->model('settings_model');
         $this->load->model('gallery_model');
         $this->load->model('gallery_categories_model');
+        $this->load->model('visitor_model');
         $this->load->helper('url');
+
+        // Log visitor
+        $this->visitor_model->log_visitor();
+
+        // Check if banned
+        if ($this->visitor_model->is_banned($this->input->ip_address())) {
+            show_error('You are banned from this site.', 403);
+        }
     }
 
     public function index()

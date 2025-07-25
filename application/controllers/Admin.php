@@ -14,6 +14,7 @@ class Admin extends CI_Controller {
         $this->load->model('settings_model');
         $this->load->model('gallery_model');
         $this->load->model('gallery_categories_model');
+        $this->load->model('visitor_model');
         $this->load->helper('url');
         $this->load->helper('form');
         $this->load->library('form_validation');
@@ -25,6 +26,7 @@ class Admin extends CI_Controller {
     {
         $data['title'] = 'Admin Panel';
         $data['settings'] = $this->settings_model->get_settings();
+        $data['visitor_data'] = $this->visitor_model->get_visitor_data_for_graph();
         $this->load->view('admin/templates/header', $data);
         $this->load->view('admin/dashboard', $data);
         $this->load->view('admin/templates/footer', $data);
@@ -319,6 +321,36 @@ class Admin extends CI_Controller {
     {
         $this->gallery_categories_model->delete_category($id);
         redirect('admin/gallery_categories');
+    }
+
+    public function visitors()
+    {
+        $data['title'] = 'Visitors';
+        $data['visitors'] = $this->visitor_model->get_visitors();
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/visitors', $data);
+        $this->load->view('admin/templates/footer', $data);
+    }
+
+    public function banned_ips()
+    {
+        $data['title'] = 'Banned IPs';
+        $data['banned_ips'] = $this->visitor_model->get_banned_ips();
+        $this->load->view('admin/templates/header', $data);
+        $this->load->view('admin/banned_ips', $data);
+        $this->load->view('admin/templates/footer', $data);
+    }
+
+    public function ban_ip($ip_address)
+    {
+        $this->visitor_model->ban_ip($ip_address);
+        redirect('admin/visitors');
+    }
+
+    public function unban_ip($id)
+    {
+        $this->visitor_model->unban_ip($id);
+        redirect('admin/banned_ips');
     }
 
     public function contact()

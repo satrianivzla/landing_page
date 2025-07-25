@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 23, 2025 at 10:31 PM
+-- Generation Time: Jul 25, 2025 at 09:38 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -20,6 +20,17 @@ SET time_zone = "+00:00";
 --
 -- Database: `coming_soon_cms`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `banned_ips`
+--
+
+CREATE TABLE `banned_ips` (
+  `id` int(11) NOT NULL,
+  `ip_address` varchar(45) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -162,9 +173,29 @@ CREATE TABLE `users_groups` (
   `group_id` mediumint(8) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `visitors`
+--
+
+CREATE TABLE `visitors` (
+  `id` int(11) NOT NULL,
+  `ip_address` varchar(45) NOT NULL,
+  `user_agent` text NOT NULL,
+  `page_url` text NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `banned_ips`
+--
+ALTER TABLE `banned_ips`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `gallery`
@@ -214,8 +245,20 @@ ALTER TABLE `users_groups`
   ADD KEY `fk_users_groups_groups1_idx` (`group_id`);
 
 --
+-- Indexes for table `visitors`
+--
+ALTER TABLE `visitors`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `banned_ips`
+--
+ALTER TABLE `banned_ips`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `gallery`
@@ -258,6 +301,12 @@ ALTER TABLE `users`
 --
 ALTER TABLE `users_groups`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `visitors`
+--
+ALTER TABLE `visitors`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
