@@ -1,6 +1,6 @@
 <h1>Gallery Categories</h1>
 <a href="<?php echo site_url('admin/add_gallery_category'); ?>" class="btn btn-primary mb-3">Add Category</a>
-<table class="table">
+<table id="categoriesTable" class="table table-striped" style="width:100%">
     <thead>
         <tr>
             <th>Name</th>

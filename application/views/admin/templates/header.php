@@ -4,6 +4,7 @@
     <title><?php echo $title; ?> - <?php echo $settings['site_title']; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs5.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -28,6 +29,9 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="<?php echo site_url('admin/gallery'); ?>">Gallery</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?php echo site_url('admin/gallery_categories'); ?>">Gallery Categories</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="<?php echo site_url('admin/contact'); ?>">Contact</a>
